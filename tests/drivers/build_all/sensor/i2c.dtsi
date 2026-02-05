@@ -1445,3 +1445,9 @@ test_i2c_wsen_pdms_25131308XXX05: wsen_pdms_25131308XXX05@c0 {
 	reg = <0xc0>;
 	sensor-type = <4>;
 };
+
+test_i2c_icm45605: icm45605@c1 {
+	compatible = "invensense,icm45605";
+	reg = <0xc1>;
+	int-gpios = <&test_gpio 0 0>;
+};
