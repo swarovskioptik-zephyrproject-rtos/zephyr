@@ -1,0 +1,42 @@
+# STM32U5G9J-DK2 DISCOVERY board configuration
+
+# Copyright (c) 2026 Robert Schaffenrath
+# SPDX-License-Identifier: Apache-2.0
+#
+# Enable Neochrom GPU2D graphic acceleration using nemaGFX
+if LVGL
+
+configdefault LV_ATTRIBUTE_MEM_ALIGN_SIZE
+	default 32 if NEOCHROM_GPU2D
+
+configdefault LV_Z_NEMA_GFX_MULTI_THREAD
+	default y if LV_USE_NEMA_GFX
+
+configdefault GRAPHICS_ACCELERATOR
+	default y
+
+if NEOCHROM_GPU2D
+
+configdefault LV_USE_NEMA_GFX
+	default y
+
+choice LV_USE_NEMA_HAL
+	default LV_NEMA_HAL_CUSTOM
+endchoice
+
+choice LV_USE_NEMA_LIB
+	default LV_NEMA_LIB_M33_REVC
+endchoice
+
+configdefault LV_NEMA_CUSTOM_HAL_INCLUDE
+	default y
+
+configdefault LV_NEMA_CUSTOM_HAL_INCLUDE_FILENAME
+	default "stm32u5xx.h"
+
+configdefault LV_NEMA_CACHE_SUPPORT
+	default y
+
+endif # NEOCHROM_GPU2D
+
+endif #LVGL

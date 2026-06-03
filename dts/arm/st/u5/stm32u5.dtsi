@@ -551,6 +551,25 @@
 			};
 		};
 
+		gpu2d: gpu@5002f000  {
+			compatible = "st,neochrom-gpu2d";
+			reg = <0x5002f000 0x1000>;
+			clocks = <&rcc STM32_CLOCK(AHB1, 20)>;
+			interrupts = <132 0>, <133 0>;
+			interrupt-names = "gpu2d", "gpu2d_sys";
+			resets = <&rctl STM32_RESET(AHB1, 20)>;
+			status = "disabled";
+		};
+
+		jpeg: codec@5002a000 {
+			compatible = "st,stm32-jpeg";
+			reg = <0x5002a000 0x1000>;
+			interrupts = <140 0>;
+			clocks = <&rcc STM32_CLOCK(AHB1, 15)>;
+			resets = <&rctl STM32_RESET(AHB1, 15)>;
+			status = "disabled";
+		};
+
 		timers1: timers@40012c00 {
 			compatible = "st,stm32-timers";
 			reg = <0x40012c00 0x400>;
