@@ -30,34 +30,35 @@ struct shared_multi_heap_region smh_psram = {
 #endif
 
 /* Memory registers definition */
-#define MR0		0x00000000U
-#define MR1		0x00000001U
-#define MR2		0x00000002U
-#define MR3		0x00000003U
-#define MR4		0x00000004U
-#define MR8		0x00000008U
+#define MR0 0x00000000U
+#define MR1 0x00000001U
+#define MR2 0x00000002U
+#define MR3 0x00000003U
+#define MR4 0x00000004U
+#define MR8 0x00000008U
 
 /* Memory commands */
-#define SYNC_READ_CMD	0x00U
-#define SYNC_WRITE_CMD	0x80U
-#define BURST_READ_CMD	0x20U
-#define BURST_WRITE_CMD	0xA0U
-#define READ_REG_CMD	0x40U
-#define WRITE_REG_CMD	0xC0U
-#define RESET_CMD	0xFFU
+#define SYNC_READ_CMD   0x00U
+#define SYNC_WRITE_CMD  0x80U
+#define BURST_READ_CMD  0x20U
+#define BURST_WRITE_CMD 0xA0U
+#define READ_REG_CMD    0x40U
+#define WRITE_REG_CMD   0xC0U
+#define RESET_CMD       0xFFU
 
 /* Memory default dummy clocks cycles */
 #if defined(CONFIG_SOC_SERIES_STM32H5X)
-#define DUMMY_CLK_CYCLES_READ	8U
-#define DUMMY_CLK_CYCLES_WRITE	4U
+#define DUMMY_CLK_CYCLES_READ  8U
+#define DUMMY_CLK_CYCLES_WRITE 4U
 #else /* CONFIG_SOC_SERIES_STM32H5X */
-#define DUMMY_CLK_CYCLES_READ	6U
-#define DUMMY_CLK_CYCLES_WRITE	6U
+#define DUMMY_CLK_CYCLES_READ  6U
+#define DUMMY_CLK_CYCLES_WRITE 6U
 #endif /* CONFIG_SOC_SERIES_STM32H5X */
 
-#define STM32_XSPI_CLOCK_PRESCALER_MIN  0U
-#define STM32_XSPI_CLOCK_PRESCALER_MAX  255U
+#define STM32_XSPI_CLOCK_PRESCALER_MIN                0U
+#define STM32_XSPI_CLOCK_PRESCALER_MAX                255U
 #define STM32_XSPI_CLOCK_COMPUTE(bus_freq, prescaler) ((bus_freq) / ((prescaler) + 1U))
+#define STM32_XSPI_SPI_INIT_MAX_FREQ                  MHZ(50)
 
 #if defined(XSPI1)
 #define STM32_XSPI1 XSPI1
@@ -168,21 +169,23 @@ static int ap_memory_configure(XSPI_HandleTypeDef *hxspi)
 
 	/* MR0 register for read and write */
 	uint8_t regW_MR0[2] = {(DT_INST_PROP(0, fixed_latency) ? 0x20U : 0x00U) |
-			       (read_latency_code << 2) |
-			       (DT_INST_PROP(0, drive_strength)), 0x8DU};
+				       (read_latency_code << 2) | (DT_INST_PROP(0, drive_strength)),
+			       0x8DU};
 	uint8_t regR_MR0[2] = {0};
 
 	/* MR4 register for read and write */
 	uint8_t regW_MR4[2] = {(DT_INST_PROP(0, write_latency) << 5) |
-			      (DT_INST_PROP(0, refresh_rate) << 3) |
-			      (DT_INST_PROP(0, pasr)), 0x05U};
+				       (DT_INST_PROP(0, refresh_rate) << 3) |
+				       (DT_INST_PROP(0, pasr)),
+			       0x05U};
 	uint8_t regR_MR4[2] = {0};
 
 	/* MR8 register for read and write */
 	uint8_t regW_MR8[2] = {(DT_INST_PROP(0, io_x16_mode) ? 0x40U : 0x00U) |
-			       (DT_INST_PROP(0, rbx) ? 0x08U : 0x00U) |
-			       (DT_INST_PROP(0, burst_type_hybrid_wrap) ? 0x04U : 0x00U) |
-			       (DT_INST_PROP(0, burst_length)), 0x08U};
+				       (DT_INST_PROP(0, rbx) ? 0x08U : 0x00U) |
+				       (DT_INST_PROP(0, burst_type_hybrid_wrap) ? 0x04U : 0x00U) |
+				       (DT_INST_PROP(0, burst_length)),
+			       0x08U};
 	uint8_t regR_MR8[2] = {0};
 
 	/* Configure Read Latency and drive Strength */
@@ -247,13 +250,12 @@ static int memc_stm32_xspi_psram_init(const struct device *dev)
 
 	/* Clock configuration */
 	if (clock_control_on(DEVICE_DT_GET(STM32_CLOCK_CONTROL_NODE),
-			     (clock_control_subsys_t) &dev_cfg->pclken) != 0) {
+			     (clock_control_subsys_t)&dev_cfg->pclken) != 0) {
 		LOG_ERR("Could not enable XSPI clock");
 		return -EIO;
 	}
 	if (clock_control_get_rate(DEVICE_DT_GET(STM32_CLOCK_CONTROL_NODE),
-				   (clock_control_subsys_t) &dev_cfg->pclken,
-				   &ahb_clock_freq) < 0) {
+				   (clock_control_subsys_t)&dev_cfg->pclken, &ahb_clock_freq) < 0) {
 		LOG_ERR("Failed call clock_control_get_rate(pclken)");
 		return -EIO;
 	}
@@ -261,15 +263,14 @@ static int memc_stm32_xspi_psram_init(const struct device *dev)
 #if DT_CLOCKS_HAS_NAME(STM32_XSPI_NODE, xspi_ker)
 	/* Kernel clock config for peripheral if any */
 	if (clock_control_configure(DEVICE_DT_GET(STM32_CLOCK_CONTROL_NODE),
-					(clock_control_subsys_t) &dev_cfg->pclken_ker,
-					NULL) != 0) {
+				    (clock_control_subsys_t)&dev_cfg->pclken_ker, NULL) != 0) {
 		LOG_ERR("Could not select XSPI domain clock");
 		return -EIO;
 	}
 
 	if (clock_control_get_rate(DEVICE_DT_GET(STM32_CLOCK_CONTROL_NODE),
-					(clock_control_subsys_t) &dev_cfg->pclken_ker,
-					&ahb_clock_freq) < 0) {
+				   (clock_control_subsys_t)&dev_cfg->pclken_ker,
+				   &ahb_clock_freq) < 0) {
 		LOG_ERR("Failed call clock_control_get_rate(pclken_ker)");
 		return -EIO;
 	}
@@ -278,7 +279,7 @@ static int memc_stm32_xspi_psram_init(const struct device *dev)
 #if DT_CLOCKS_HAS_NAME(STM32_XSPI_NODE, xspi_mgr)
 	/* Clock domain corresponding to the IO-Mgr (XSPIM) */
 	if (clock_control_on(DEVICE_DT_GET(STM32_CLOCK_CONTROL_NODE),
-				(clock_control_subsys_t) &dev_cfg->pclken_mgr) != 0) {
+			     (clock_control_subsys_t)&dev_cfg->pclken_mgr) != 0) {
 		LOG_ERR("Could not enable XSPI Manager clock");
 		return -EIO;
 	}
@@ -297,7 +298,24 @@ static int memc_stm32_xspi_psram_init(const struct device *dev)
 		return -EINVAL;
 	}
 
-	hxspi->Init.ClockPrescaler = prescaler;
+	uint32_t init_prescaler = prescaler;
+
+	if (dev_cfg->data_mode == XSPI_OCTO_MODE) {
+		uint32_t p;
+
+		for (p = STM32_XSPI_CLOCK_PRESCALER_MIN; p <= STM32_XSPI_CLOCK_PRESCALER_MAX; p++) {
+			if (STM32_XSPI_CLOCK_COMPUTE(ahb_clock_freq, p) <=
+			    STM32_XSPI_SPI_INIT_MAX_FREQ) {
+				break;
+			}
+		}
+
+		if (p > prescaler) {
+			init_prescaler = p;
+		}
+	}
+
+	hxspi->Init.ClockPrescaler = init_prescaler;
 	hxspi->Init.MemorySize = find_msb_set(dev_cfg->memory_size) - 2;
 
 	if (HAL_XSPI_Init(hxspi) != HAL_OK) {
@@ -371,10 +389,10 @@ static int memc_stm32_xspi_psram_init(const struct device *dev)
 	cmd.Instruction = SYNC_WRITE_CMD;
 	/* The STM32H5X octsopi peripheral has 8 lines */
 	cmd.DataMode = HAL_XSPI_DATA_8_LINES;
-#else /* CONFIG_SOC_SERIES_STM32H5X */
+#else  /* CONFIG_SOC_SERIES_STM32H5X */
 	cmd.Instruction = BURST_WRITE_CMD;
-	cmd.DataMode = DT_INST_PROP(0, io_x16_mode) ? HAL_XSPI_DATA_16_LINES
-						    : HAL_XSPI_DATA_8_LINES;
+	cmd.DataMode =
+		DT_INST_PROP(0, io_x16_mode) ? HAL_XSPI_DATA_16_LINES : HAL_XSPI_DATA_8_LINES;
 #endif /* CONFIG_SOC_SERIES_STM32H5X */
 	cmd.DataDTRMode = HAL_XSPI_DATA_DTR_ENABLE;
 	cmd.DummyCycles = DUMMY_CLK_CYCLES_WRITE;
@@ -387,7 +405,7 @@ static int memc_stm32_xspi_psram_init(const struct device *dev)
 	cmd.OperationType = HAL_XSPI_OPTYPE_READ_CFG;
 #if defined(CONFIG_SOC_SERIES_STM32H5X)
 	cmd.Instruction = SYNC_READ_CMD;
-#else /* CONFIG_SOC_SERIES_STM32H5X */
+#else  /* CONFIG_SOC_SERIES_STM32H5X */
 	cmd.Instruction = BURST_READ_CMD;
 #endif /* CONFIG_SOC_SERIES_STM32H5X */
 	cmd.DummyCycles = DUMMY_CLK_CYCLES_READ;
@@ -441,32 +459,32 @@ static const struct memc_stm32_xspi_psram_config memc_stm32_xspi_cfg = {
 };
 
 static struct memc_stm32_xspi_psram_data memc_stm32_xspi_data = {
-	.hxspi = {
-		.Instance = (XSPI_TypeDef *)DT_REG_ADDR(STM32_XSPI_NODE),
-		.Init = {
-			.FifoThresholdByte = 2U,
-			.MemoryMode = HAL_XSPI_SINGLE_MEM,
-			.MemoryType = (DT_INST_PROP(0, io_x16_mode) ?
-					HAL_XSPI_MEMTYPE_APMEM_16BITS :
-					HAL_XSPI_MEMTYPE_APMEM),
-			.ChipSelectHighTimeCycle = 5U,
-			.FreeRunningClock = HAL_XSPI_FREERUNCLK_DISABLE,
-			.ClockMode = HAL_XSPI_CLOCK_MODE_0,
-			.WrapSize = HAL_XSPI_WRAP_NOT_SUPPORTED,
-			.SampleShifting = HAL_XSPI_SAMPLE_SHIFT_NONE,
-			.DelayHoldQuarterCycle = HAL_XSPI_DHQC_ENABLE,
-			.ChipSelectBoundary = DT_INST_PROP(0, st_csbound),
+	.hxspi =
+		{
+			.Instance = (XSPI_TypeDef *)DT_REG_ADDR(STM32_XSPI_NODE),
+			.Init =
+				{
+					.FifoThresholdByte = 2U,
+					.MemoryMode = HAL_XSPI_SINGLE_MEM,
+					.MemoryType = (DT_INST_PROP(0, io_x16_mode)
+							       ? HAL_XSPI_MEMTYPE_APMEM_16BITS
+							       : HAL_XSPI_MEMTYPE_APMEM),
+					.ChipSelectHighTimeCycle = 5U,
+					.FreeRunningClock = HAL_XSPI_FREERUNCLK_DISABLE,
+					.ClockMode = HAL_XSPI_CLOCK_MODE_0,
+					.WrapSize = HAL_XSPI_WRAP_NOT_SUPPORTED,
+					.SampleShifting = HAL_XSPI_SAMPLE_SHIFT_NONE,
+					.DelayHoldQuarterCycle = HAL_XSPI_DHQC_ENABLE,
+					.ChipSelectBoundary = DT_INST_PROP(0, st_csbound),
 #ifdef OCTOSPI_DCR1_DLYBYP
-			.DelayBlockBypass = HAL_XSPI_DELAY_BLOCK_ON,
+					.DelayBlockBypass = HAL_XSPI_DELAY_BLOCK_ON,
 #endif /* OCTOSPI_DCR1_DLYBYP */
-			.MaxTran = 0U,
-			.Refresh = DT_INST_PROP(0, st_refresh),
-			.MemorySelect = HAL_XSPI_CSSEL_NCS1,
+					.MaxTran = 0U,
+					.Refresh = DT_INST_PROP(0, st_refresh),
+					.MemorySelect = HAL_XSPI_CSSEL_NCS1,
+				},
 		},
-	},
 };
 
-DEVICE_DT_INST_DEFINE(0, &memc_stm32_xspi_psram_init, NULL,
-		      &memc_stm32_xspi_data, &memc_stm32_xspi_cfg,
-		      POST_KERNEL, CONFIG_MEMC_INIT_PRIORITY,
-		      NULL);
+DEVICE_DT_INST_DEFINE(0, &memc_stm32_xspi_psram_init, NULL, &memc_stm32_xspi_data,
+		      &memc_stm32_xspi_cfg, POST_KERNEL, CONFIG_MEMC_INIT_PRIORITY, NULL);
