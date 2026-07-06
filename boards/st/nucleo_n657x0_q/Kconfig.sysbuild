@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_NUCLEO_N657X0_Q_STM32N657XX
+
+choice BOOTLOADER
+	default BOOTLOADER_MCUBOOT
+endchoice
+
+endif # BOARD_NUCLEO_N657X0_Q_STM32N657XX
