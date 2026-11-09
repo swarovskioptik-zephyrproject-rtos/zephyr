@@ -15,6 +15,9 @@
 
 #include <icm4268x_reg.h>
 
+#define XY 1
+#define Z  2
+
 LOG_MODULE_DECLARE(ICM4268X, CONFIG_SENSOR_LOG_LEVEL);
 
 #define NUM_REGS (UINT8_MAX >> 1)
