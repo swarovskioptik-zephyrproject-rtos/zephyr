@@ -34,7 +34,7 @@ LOG_MODULE_REGISTER(BH1730, CONFIG_SENSOR_LOG_LEVEL);
 #define BH1730_CMD_ADDR_MASK 0x1F
 
 #define BH1730_ITIME_MIN_MS 3U   /* ITIME = 255 → 2.7 ms */
-#define BH1730_ITIME_MAX_MS 691U /* ITIME = 0   → 691 ms */
+#define BH1730_ITIME_MAX_MS 688U /* ITIME = 1   → 688 ms (0 -> manual integration mode) */
 
 #define BH1730_GAIN_1   0x00
 #define BH1730_GAIN_2   0x01

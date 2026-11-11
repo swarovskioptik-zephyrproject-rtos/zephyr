@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026 Swarovski Optik AG & Co. KG, Absam, Austria
+ * Copyright (c) 2026 Swarovski Optik AG & Co. KG
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -16,7 +16,7 @@ enum sensor_attribute_bh1730 {
 	/**
 	 * Sensor integration time in ms
 	 *
-	 * 3 - 691ms
+	 * 3 - 688ms
 	 */
 	SENSOR_ATTR_BH1730_SENSOR_INTEGRATION_TIME = SENSOR_ATTR_PRIV_START,
 };
