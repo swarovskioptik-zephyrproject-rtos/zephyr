@@ -1,6 +1,8 @@
 # BH1730 ambient light sensor configuration options
 
 # Copyright (c) 2025, Borislav Kereziev
+# Copyright (c) 2026 Swarovski Optik AG & Co. KG, Absam, Austria
+
 # SPDX-License-Identifier: Apache-2.0
 
 config BH1730

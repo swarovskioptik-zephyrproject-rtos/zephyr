@@ -1,4 +1,5 @@
 # Copyright (c) 2025, Borislav Kereziev
+# Copyright (c) 2026 Swarovski Optik AG & Co. KG, Absam, Austria
 # SPDX-License-Identifier: Apache-2.0
 
 description: Rohm BH1730 ambient light sensor.
@@ -32,6 +33,6 @@ properties:
     default: 0xDA
     description: |
       ITIME value in TIMING register determines integration time.
-      Higher values result in longer integration time and
-      increased accuracy.
+      Lower values result in longer integration time and higher resolution.
+      Used as start value; can be changed at runtime.
       The default corresponds to the reset value of the TIMING register.
